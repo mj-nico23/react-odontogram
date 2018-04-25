@@ -3,8 +3,12 @@ svg.tooth {
   fill: white;
 }
 
-svg.tooth .marked-zone {
-  fill: green;
+svg.tooth .to-do {
+  fill: red;
+}
+
+svg.tooth .done {
+  fill: blue;
 }
 
 svg.tooth :hover {

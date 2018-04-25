@@ -1,0 +1,18 @@
+.odontogram {
+  padding: 10px;
+}
+
+.flex-container-justify {
+  display: flex;
+  justify-content: space-around;
+}
+
+.flex-container-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.flex-container-left {
+  display: flex;
+  justify-content: flex-start;
+}

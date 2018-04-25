@@ -1,0 +1,41 @@
+svg.tooth {
+  cursor: pointer;
+  fill: white;
+}
+
+svg.tooth .marked-zone {
+  fill: green;
+}
+
+svg.tooth :hover {
+  fill: lightgray;
+}
+
+svg.tooth .active {
+  fill: gray;
+}
+
+svg.tooth polygon {
+  stroke: black;
+  stroke-width: 1;
+}
+
+.tooth-wrapper {
+  margin: 0 2px;
+  position: relative;
+}
+
+.flex-container-justify {
+  display: flex;
+  justify-content: space-around;
+}
+
+.flex-container-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.flex-container-left {
+  display: flex;
+  justify-content: flex-start;
+}

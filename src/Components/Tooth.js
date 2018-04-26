@@ -11,6 +11,7 @@ class Tooth extends Component {
 
         this.state = {
             isActive: false,
+            ContextZone: "",
             Zones: {
                 center: 0,
                 top: 0,
@@ -23,12 +24,18 @@ class Tooth extends Component {
 
     onClick(zone, event) {
         let zones = this.state.Zones;
-        zones[zone] = zones[zone] === 0 ? 1 : 2;
+        zones[zone] = 1;
         this.setState({ Zones: zones });
     }
 
-    handleClick(e, data) {
-        console.log(data.foo);
+    handleClick(e, data, target) {
+        let zones = this.state.Zones;
+        zones[this.state.ContextZone] = 2;
+        this.setState({ Zones: zones });
+    }
+
+    contextMyMenu(zone) {
+        this.setState({ ContextZone: zone });
     }
 
     render() {
@@ -60,11 +67,11 @@ class Tooth extends Component {
 
         return(
             <div style={{width: `${L}px`, visibility: this.props.hidden}} className="tooth-wrapper" id={this.props.id}>
-                <ContextMenu id={"ctx" + this.props.toothNumber}>
-                    <MenuItem data={{foo: 'bar'}} onClick={this.handleClick}>
+                <ContextMenu id={"ctx" + this.props.toothNumber} className="context-menu" >
+                    <MenuItem data={{foo: 'bar'}} onClick={this.handleClick.bind(this)} className="context-menu-item">
                         ContextMenu Item 1
                     </MenuItem>
-                    <MenuItem data={{foo: 'bar2'}} onClick={this.handleClick}>
+                    <MenuItem data={{foo: 'bar2'}} onClick={this.handleClick.bind(this)} className="context-menu-item">
                         ContextMenu Item 2
                     </MenuItem>
                 </ContextMenu>
@@ -77,30 +84,36 @@ class Tooth extends Component {
                             height={a}
                             onClick={this.onClick.bind(this, 'center')}
                             className={getClassNamesByZone(this.state.Zones, 'center')}
+                            onContextMenu={this.contextMyMenu.bind(this, 'center')}
                             />
+                            
 
                         <polygon
                             points={top}
                             onClick={this.onClick.bind(this, 'top')}
                             className={getClassNamesByZone(this.state.Zones, 'top')}
+                            onContextMenu={this.contextMyMenu.bind(this, 'top')}
                             />
 
                         <polygon
                             points={left}
                             onClick={this.onClick.bind(this, 'left')}
                             className={getClassNamesByZone(this.state.Zones, 'left')}
+                            onContextMenu={this.contextMyMenu.bind(this, 'left')}
                             />
 
                         <polygon
                             points={right}
                             onClick={this.onClick.bind(this, 'right')}
                             className={getClassNamesByZone(this.state.Zones, 'right')}
+                            onContextMenu={this.contextMyMenu.bind(this, 'right')}
                             />
 
                         <polygon
                             points={bottom}
                             onClick={this.onClick.bind(this, 'bottom')}
                             className={getClassNamesByZone(this.state.Zones, 'bottom')}
+                            onContextMenu={this.contextMyMenu.bind(this, 'bottom')}
                             />
 
                     </svg>

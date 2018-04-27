@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger, SubMenu } from "react-contextmenu";
 import "./Tooth.css";
+import "./ContextMenu.css";
+
 
 const SIZE = 40;
 
@@ -10,7 +12,6 @@ class Tooth extends Component {
         super(props);
 
         this.state = {
-            isActive: false,
             ContextZone: "",
             Zones: {
                 center: 0,
@@ -18,7 +19,11 @@ class Tooth extends Component {
                 bottom: 0,
                 left: 0,
                 right: 0
-            }
+            },
+            Extract: 0,
+            Crown: 0,
+            Filter: 0,
+            Fracture: 0
         }
     }
 
@@ -29,9 +34,14 @@ class Tooth extends Component {
     }
 
     handleClick(e, data, target) {
-        let zones = this.state.Zones;
-        zones[this.state.ContextZone] = 2;
-        this.setState({ Zones: zones });
+        // let zones = this.state.Zones;
+        // zones[this.state.ContextZone] = 2;
+        this.setState({ 
+            Extract: data.Extract || this.state.Extract,
+            Crown: data.Crown || this.state.Crown,
+            Filter: data.Filter || data.Filter,
+            Fracture: data.Fracture || this.state.Fracture
+        });
     }
 
     contextMyMenu(zone) {
@@ -67,13 +77,23 @@ class Tooth extends Component {
 
         return(
             <div style={{width: `${L}px`, visibility: this.props.hidden}} className="tooth-wrapper" id={this.props.id}>
-                <ContextMenu id={"ctx" + this.props.toothNumber} className="context-menu" >
-                    <MenuItem data={{foo: 'bar'}} onClick={this.handleClick.bind(this)} className="context-menu-item">
-                        ContextMenu Item 1
-                    </MenuItem>
-                    <MenuItem data={{foo: 'bar2'}} onClick={this.handleClick.bind(this)} className="context-menu-item">
-                        ContextMenu Item 2
-                    </MenuItem>
+                <ContextMenu id={"ctx" + this.props.toothNumber}>
+                    <SubMenu title='Hecho'>
+                        <MenuItem onClick={this.handleClick.bind(this)}>Caries</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)}>Caries toda la pieza</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Extract: 1}}>Ausente</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Crown: 1}}>Corona</MenuItem>
+                    </SubMenu>
+                    <SubMenu title='Hacer'>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Caries: 2}}>Caries</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ CariesFull: 2}}>Caries toda la pieza</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Extract: 2}} >Extracción</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Crown: 2}}>Corona</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Filter: 2}}>Filtrado</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Fracture: 2}}>Fractura</MenuItem>
+                    </SubMenu>
+                    <MenuItem divider />
+                    <MenuItem onClick={this.handleClick.bind(this)}>Borrar Todo</MenuItem>
                 </ContextMenu>
                 <ContextMenuTrigger id={"ctx" + this.props.toothNumber}>
                     <svg width={L} height={L} className="tooth">
@@ -87,7 +107,6 @@ class Tooth extends Component {
                             onContextMenu={this.contextMyMenu.bind(this, 'center')}
                             />
                             
-
                         <polygon
                             points={top}
                             onClick={this.onClick.bind(this, 'top')}
@@ -115,6 +134,35 @@ class Tooth extends Component {
                             className={getClassNamesByZone(this.state.Zones, 'bottom')}
                             onContextMenu={this.contextMyMenu.bind(this, 'bottom')}
                             />
+
+                        { this.state.Extract && this.state.Extract > 0 && 
+                            <g stroke={this.state.Extract === 1 ? "red" : "blue"}>
+                                <line x1="0" y1="0" x2={L} y2={L} strokeWidth="3" />
+                                <line x1="0" y1={L} x2={L} y2="0" strokeWidth="3" />
+                            </g>
+                        }
+
+                        { this.state.Crown && this.state.Crown > 0 && 
+                            <circle 
+                                cx={L/2} 
+                                cy={L/2} r={L/2} 
+                                fill="none" 
+                                stroke={this.state.Crown === 1 ? "red" : "blue"} 
+                                strokeWidth="3"  
+                            />
+                        }
+
+                        { this.state.Filter && this.state.Filter > 0 && 
+                            <g stroke={this.state.Filter === 1 ? "red" : "blue"}>
+                                <line x1="0" y1={L} x2={L} y2="0" strokeWidth="3" />
+                            </g>
+                        }
+
+                        { this.state.Fracture && this.state.Fracture > 0 && 
+                            <g stroke={this.state.Fracture === 1 ? "red" : "blue"}>
+                                <line x1="0" y1={L/2} x2={L} y2={L/2} strokeWidth="3" />
+                            </g>
+                        }
 
                     </svg>
                 </ContextMenuTrigger>

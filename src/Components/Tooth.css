@@ -11,10 +11,6 @@ svg.tooth .done {
   fill: blue;
 }
 
-svg.tooth :hover {
-  fill: lightgray;
-}
-
 svg.tooth .active {
   fill: gray;
 }
@@ -22,6 +18,14 @@ svg.tooth .active {
 svg.tooth polygon {
   stroke: black;
   stroke-width: 1;
+}
+
+polygon:hover {
+  fill: lightgray;
+}
+
+rect:hover {
+  fill: lightgray;
 }
 
 .tooth-wrapper {
@@ -42,25 +46,4 @@ svg.tooth polygon {
 .flex-container-left {
   display: flex;
   justify-content: flex-start;
-}
-
-.react-contextmenu {
-  position: absolute;
-  z-index: 10;
-  margin: 0;
-  padding: 0;
-  background-color: ghostwhite;
-}
-
-.react-contextmenu-item {
-  display: block;
-  margin-bottom: 4px;
-  background-color: ghostwhite;
-  color: blue;
-  cursor: pointer;
-}
-
-.react-contextmenu-item:hover
-{
-  background-color: bisque;
 }

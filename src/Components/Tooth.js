@@ -11,7 +11,11 @@ class Tooth extends Component {
     constructor(props){
         super(props);
 
-        this.state = {
+        this.state = this.InitTooth();
+    }
+
+    InitTooth() {
+         return {
             ContextZone: "",
             Zones: {
                 center: 0,
@@ -24,24 +28,47 @@ class Tooth extends Component {
             Crown: 0,
             Filter: 0,
             Fracture: 0
-        }
+        };
     }
 
     onClick(zone, event) {
-        let zones = this.state.Zones;
-        zones[zone] = 1;
-        this.setState({ Zones: zones });
+        // let zones = this.state.Zones;
+        // zones[zone] = 1;
+        // this.setState({ Zones: zones });
     }
 
     handleClick(e, data, target) {
-        // let zones = this.state.Zones;
-        // zones[this.state.ContextZone] = 2;
-        this.setState({ 
-            Extract: data.Extract || this.state.Extract,
-            Crown: data.Crown || this.state.Crown,
-            Filter: data.Filter || data.Filter,
-            Fracture: data.Fracture || this.state.Fracture
-        });
+        console.log(this.state.ContextZone);
+        if(data.Borrar === 1){
+            this.setState = this.InitTooth();
+            return;
+        }
+
+        let zones = this.state.Zones;
+
+        if(data.CariesFull){
+            for(var property in zones) {
+                if (zones.hasOwnProperty(property)) {
+                    zones[property] = data.CariesFull;
+                }    
+            }
+            this.setState({ Zones: zones });
+        }
+        else if(data.Caries){
+            zones[this.state.ContextZone] = data.Caries;
+            this.setState({ Zones: zones });
+        } else {
+            if(data.Extract === 1 || data.Crown === 1 || data.Filter === 2 || data.Fracture === 2){
+                this.setState = this.InitTooth();
+            }
+
+            this.setState({ 
+                Extract: data.Extract || this.state.Extract,
+                Crown: data.Crown || this.state.Crown,
+                Filter: data.Filter || this.state.Filter,
+                Fracture: data.Fracture || this.state.Fracture
+            });
+        }
     }
 
     contextMyMenu(zone) {
@@ -79,8 +106,8 @@ class Tooth extends Component {
             <div style={{width: `${L}px`, visibility: this.props.hidden}} className="tooth-wrapper" id={this.props.id}>
                 <ContextMenu id={"ctx" + this.props.toothNumber}>
                     <SubMenu title='Hecho'>
-                        <MenuItem onClick={this.handleClick.bind(this)}>Caries</MenuItem>
-                        <MenuItem onClick={this.handleClick.bind(this)}>Caries toda la pieza</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ Caries: 1}}>Caries</MenuItem>
+                        <MenuItem onClick={this.handleClick.bind(this)} data={{ CariesFull: 1}}>Caries toda la pieza</MenuItem>
                         <MenuItem onClick={this.handleClick.bind(this)} data={{ Extract: 1}}>Ausente</MenuItem>
                         <MenuItem onClick={this.handleClick.bind(this)} data={{ Crown: 1}}>Corona</MenuItem>
                     </SubMenu>
@@ -93,7 +120,7 @@ class Tooth extends Component {
                         <MenuItem onClick={this.handleClick.bind(this)} data={{ Fracture: 2}}>Fractura</MenuItem>
                     </SubMenu>
                     <MenuItem divider />
-                    <MenuItem onClick={this.handleClick.bind(this)}>Borrar Todo</MenuItem>
+                    <MenuItem onClick={this.handleClick.bind(this)} data={{ Borrar: 1}}>Borrar Todo</MenuItem>
                 </ContextMenu>
                 <ContextMenuTrigger id={"ctx" + this.props.toothNumber}>
                     <svg width={L} height={L} className="tooth">

@@ -172,9 +172,8 @@ function Tooth(props) {
                 break;
             }
     
-            case "clear": {
+            default: {
                 setToothState(clearState);
-                break;
             }
         }
     }

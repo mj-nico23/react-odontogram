@@ -1,0 +1,49 @@
+svg.tooth {
+  cursor: pointer;
+  fill: white;
+}
+
+svg.tooth .to-do {
+  fill: red;
+}
+
+svg.tooth .done {
+  fill: blue;
+}
+
+svg.tooth .active {
+  fill: gray;
+}
+
+svg.tooth polygon {
+  stroke: black;
+  stroke-width: 0.5;
+}
+
+polygon:hover {
+  fill: lightgray;
+}
+
+rect:hover {
+  fill: lightgray;
+}
+
+.tooth-wrapper {
+  margin: 0 2px;
+  position: relative;
+}
+
+.flex-container-justify {
+  display: flex;
+  justify-content: space-around;
+}
+
+.flex-container-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.flex-container-left {
+  display: flex;
+  justify-content: flex-start;
+}

@@ -47,3 +47,8 @@ rect:hover {
   display: flex;
   justify-content: flex-start;
 }
+
+.tooth {
+  font-size: 6pt;
+  font-weight:normal;
+}

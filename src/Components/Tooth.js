@@ -1,11 +1,11 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer, useRef } from 'react';
 import useContextMenu from 'contextmenu';
 import 'contextmenu/ContextMenu.css';
 import './Tooth.css';
 
-function Tooth(props) {
+function Tooth({ number, positionX, positionY, onChange }) {
     const initialState = {
-        Zones: {
+        Cavities: {
             center: 0,
             top: 0,
             bottom: 0,
@@ -29,7 +29,7 @@ function Tooth(props) {
             case 'fracture':
                 return { ...toothState, Fracture: action.value };
             case 'carie':
-                return { ...toothState, Zones: setZones(toothState, action.zone, action.value) };
+                return { ...toothState, Cavities: setCavities(toothState, action.zone, action.value) };
             case 'clear':
                 return { initialState };
             default:
@@ -47,25 +47,36 @@ function Tooth(props) {
     const [toothState, dispatch] = useReducer(reducer, initialState);
     const [contextMenu, useCM] = useContextMenu({ submenuSymbol: '>' });
 
+    const firstUpdate = useRef(true);
+    useEffect(() => {
+        if (firstUpdate.current) {
+            firstUpdate.current = false;
+            return;
+        }
+        onChange(toothState);
+    }, [toothState, onChange]);
+
     // Done SubMenu
     const doneSubMenu = (place, value) => {
         return {
-            'Caries': () => dispatch(carie(place, value)),
-            'Caries All': () => dispatch(carie('all', value)),
-            'Ausente': () => dispatch(extract(value)),
-            'Corona': () => dispatch(crown(value)),
+            'Cavity': () => {
+                dispatch(carie(place, value));
+            },
+            'Cavities All': () => dispatch(carie('all', value)),
+            'Absent': () => dispatch(extract(value)),
+            'Crown': () => dispatch(crown(value)),
         }
     }
 
     // Todo SubMenu
     const todoSubMenu = (place, value) => {
         return {
-            'Caries': () => dispatch(carie(place, value)),
-            'Caries All': () => dispatch(carie('all', value)),
-            'Ausente': () => dispatch(extract(value)),
-            'Corona': () => dispatch(crown(value)),
-            'Filtrado': () => dispatch(filter(value)),
-            'Fracturado': () => dispatch(fracture(value)),
+            'Cavity': () => dispatch(carie(place, value)),
+            'Cavities All': () => dispatch(carie('all', value)),
+            'Absent': () => dispatch(extract(value)),
+            'Crown': () => dispatch(crown(value)),
+            'Filtered Out': () => dispatch(filter(value)),
+            'Fractured': () => dispatch(fracture(value)),
         }
     }
 
@@ -73,17 +84,17 @@ function Tooth(props) {
     const menuConfig = (place) => {
         return {
             'Done': doneSubMenu(place, 1),
-            'To do': todoSubMenu(place, 2),
+            'To Do': todoSubMenu(place, 2),
             'JSX line': <hr></hr>,
             'Clear All': () => dispatch(clear()),
         }
     };
 
     let getClassNamesByZone = (zone) => {
-        if (toothState.Zones) {
-            if (toothState.Zones[zone] === 1) {
+        if (toothState.Cavities) {
+            if (toothState.Cavities[zone] === 1) {
                 return 'to-do';
-            } else if (toothState.Zones[zone] === 2) {
+            } else if (toothState.Cavities[zone] === 2) {
                 return 'done';
             }
         }
@@ -92,7 +103,7 @@ function Tooth(props) {
     }
 
     // Tooth position
-    const translate = `translate(${props.positionX},${props.positionY})`;
+    const translate = `translate(${positionX},${positionY})`;
 
     return (
         <svg className="tooth">
@@ -130,17 +141,17 @@ function Tooth(props) {
                     fill="navy"
                     strokeWidth="0.1"
                     className="tooth">
-                    {props.number}
+                    {number}
                 </text>
             </g>
             {contextMenu}
         </svg>
     )
 
-    function setZones(prevState, zone, value) {
-        if (prevState && prevState.Zones) {
+    function setCavities(prevState, zone, value) {
+        if (prevState && prevState.Cavities) {
             if (zone === "all") {
-                prevState.Zones =
+                prevState.Cavities =
                 {
                     center: value,
                     top: value,
@@ -149,10 +160,10 @@ function Tooth(props) {
                     right: value
                 }
             } else {
-                prevState.Zones[zone] = value;
+                prevState.Cavities[zone] = value;
             }
 
-            return prevState.Zones;
+            return prevState.Cavities;
         }
     }
 

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import useContextMenu from 'contextmenu';
 import 'contextmenu/ContextMenu.css';
 import './Tooth.css';
 
 function Tooth(props) {
-    const clearState = {
+    const initialState = {
         Zones: {
             center: 0,
             top: 0,
@@ -18,28 +18,54 @@ function Tooth(props) {
         Fracture: 0
     };
 
-    const [toothState, setToothState] = useState(clearState);
+    function reducer(toothState, action) {
+        switch (action.type) {
+            case 'crown':
+                return { ...toothState, Crown: action.value };
+            case 'extract':
+                return { ...toothState, Extract: action.value };
+            case 'filter':
+                return { ...toothState, Filter: action.value };
+            case 'fracture':
+                return { ...toothState, Fracture: action.value };
+            case 'carie':
+                return { ...toothState, Zones: setZones(toothState, action.zone, action.value) };
+            case 'clear':
+                return { initialState };
+            default:
+                throw new Error();
+        }
+    }
+
+    const crown = (val) => ({ type: "crown", value: val });
+    const extract = (val) => ({ type: "extract", value: val });
+    const filter = (val) => ({ type: "filter", value: val });
+    const fracture = (val) => ({ type: "fracture", value: val });
+    const carie = (z, val) => ({ type: "carie", value: val, zone: z });
+    const clear = () => ({ type: "clear" });
+
+    const [toothState, dispatch] = useReducer(reducer, initialState);
     const [contextMenu, useCM] = useContextMenu({ submenuSymbol: '>' });
 
     // Done SubMenu
     const doneSubMenu = (place, value) => {
         return {
-            'Caries': () => setNewToothState('caries', place, value),
-            'Caries All': () => setNewToothState('all', place, value),
-            'Ausente': () => setNewToothState('ausente', place, value),
-            'Corona': () => setNewToothState('corona', place, value),
+            'Caries': () => dispatch(carie(place, value)),
+            'Caries All': () => dispatch(carie('all', value)),
+            'Ausente': () => dispatch(extract(value)),
+            'Corona': () => dispatch(crown(value)),
         }
     }
-    
+
     // Todo SubMenu
     const todoSubMenu = (place, value) => {
         return {
-            'Caries': () => setNewToothState('caries', place, value),
-            'Caries All': () => setNewToothState('all', place, value),
-            'Ausente': () => setNewToothState('ausente', place, value),
-            'Corona': () => setNewToothState('corona', place, value),
-            'Filtrado': () => setNewToothState('filtrado', place, value),
-            'Fracturado': () => setNewToothState('fracturado', place, value),
+            'Caries': () => dispatch(carie(place, value)),
+            'Caries All': () => dispatch(carie('all', value)),
+            'Ausente': () => dispatch(extract(value)),
+            'Corona': () => dispatch(crown(value)),
+            'Filtrado': () => dispatch(filter(value)),
+            'Fracturado': () => dispatch(fracture(value)),
         }
     }
 
@@ -49,7 +75,7 @@ function Tooth(props) {
             'Done': doneSubMenu(place, 1),
             'To do': todoSubMenu(place, 2),
             'JSX line': <hr></hr>,
-            'Clear All': () => setNewToothState('clear'),
+            'Clear All': () => dispatch(clear()),
         }
     };
 
@@ -112,69 +138,21 @@ function Tooth(props) {
     )
 
     function setZones(prevState, zone, value) {
-        prevState.Zones[zone] = value;
-        return prevState.Zones;
-    }
-
-    function setNewToothState(action, zone, value){
-        switch(action) {
-            case "caries": {
-                setToothState(currentState => ({
-                    ...currentState,
-                    Zones: setZones(currentState, zone, value)
-                }));
-                break;
-            }
-    
-            case "all": {
-                setToothState(currentState => ({
-                    ...currentState,
-                    Zones: {
-                        center: value,
-                        top: value,
-                        bottom: value,
-                        left: value,
-                        right: value
-                    }
-                }));
-                break;
-            }
-    
-            case "ausente": {
-                setToothState(currentState => ({
-                    ...currentState,
-                    Extract: value
-                }));
-                break;
-            }
-    
-            case "corona": {
-                setToothState(currentState => ({
-                    ...currentState,
-                    Crown: value
-                }));
-                break;
-            }
-    
-            case "fracturado": {
-                setToothState(currentState => ({
-                    ...currentState,
-                    Fracture: value
-                }));
-                break;
+        if (prevState && prevState.Zones) {
+            if (zone === "all") {
+                prevState.Zones =
+                {
+                    center: value,
+                    top: value,
+                    bottom: value,
+                    left: value,
+                    right: value
+                }
+            } else {
+                prevState.Zones[zone] = value;
             }
 
-            case "filtrado": {
-                setToothState(currentState => ({
-                    ...currentState,
-                    Filter: value
-                }));
-                break;
-            }
-    
-            default: {
-                setToothState(clearState);
-            }
+            return prevState.Zones;
         }
     }
 
@@ -185,8 +163,8 @@ function Tooth(props) {
                 <line x1="0" y1="0" x2="20" y2="20" strokeWidth="2" />
                 <line x1="0" y1="20" x2="20" y2="0" strokeWidth="2" />
             </g>
-        }        
-    
+        }
+
         if (toothState.Fracture > 0) {
             otherFigures = <g stroke={toothState.Fracture === 1 ? "red" : "blue"}>
                 <line x1="0" y1="10" x2="20" y2="10" strokeWidth="2"></line>
@@ -198,18 +176,18 @@ function Tooth(props) {
                 <line x1="0" y1="20" x2="20" y2="0" strokeWidth="2" />
             </g>
         }
-    
+
         if (toothState.Crown > 0) {
             otherFigures = <circle
                 cx="10"
-                cy="10" 
+                cy="10"
                 r="10"
                 fill="none"
                 stroke={toothState.Crown === 1 ? "red" : "blue"}
                 strokeWidth="2"
             />;
         }
-        
+
         return otherFigures;
     }
 }

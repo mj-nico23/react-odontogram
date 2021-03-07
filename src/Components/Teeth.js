@@ -2,17 +2,21 @@ import React from 'react';
 import Tooth from './Tooth';
 
 function Teeth(props) {
-    let ar = getArray(props.start, props.end);
+    let tooths = getArray(props.start, props.end);
+
+    function handleToothUpdate(toothState) {
+        console.log(toothState);
+    }
 
     return (
         <g transform="scale(1.4)" id="gmain">
             {
-                ar.map((i) => 
-                    <Tooth 
-                        key={i} 
-                        number={i} 
-                        positionY={props.y} 
-                        positionX={Math.abs((i - props.start) * 25) + props.x} 
+                tooths.map((i) =>
+                    <Tooth toothStateChange={(state) => handleToothUpdate(state)}
+                        key={i}
+                        number={i}
+                        positionY={props.y}
+                        positionX={Math.abs((i - props.start) * 25) + props.x}
                     />
                 )
             }

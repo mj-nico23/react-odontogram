@@ -1,23 +1,18 @@
 import React from 'react';
 import Tooth from './Tooth';
 
-function Teeth(props) {
-    let tooths = getArray(props.start, props.end);
-
-    const handleToothUpdate = (toothState) => {
-        console.log(toothState);
-    };
-
+function Teeth({ start, end, x, y, handleChange }) {
+    let tooths = getArray(start, end);
 
     return (
         <g transform="scale(1.4)" id="gmain">
             {
                 tooths.map((i) =>
-                    <Tooth onChange={handleToothUpdate}
+                    <Tooth onChange={handleChange}
                         key={i}
                         number={i}
-                        positionY={props.y}
-                        positionX={Math.abs((i - props.start) * 25) + props.x}
+                        positionY={y}
+                        positionX={Math.abs((i - start) * 25) + x}
                     />
                 )
             }
@@ -26,7 +21,6 @@ function Teeth(props) {
 }
 
 function getArray(start, end) {
-
     if (start > end) return getInverseArray(start, end);
 
     let list = [];

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Odontogram from './Odontogram';
+import Odontogram from './Components/Odontogram';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(

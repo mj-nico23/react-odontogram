@@ -31,7 +31,7 @@ function Tooth({ number, positionX, positionY, onChange }) {
             case 'carie':
                 return { ...toothState, Cavities: setCavities(toothState, action.zone, action.value) };
             case 'clear':
-                return { initialState };
+                return initialState;
             default:
                 throw new Error();
         }
@@ -53,8 +53,8 @@ function Tooth({ number, positionX, positionY, onChange }) {
             firstUpdate.current = false;
             return;
         }
-        onChange(toothState);
-    }, [toothState, onChange]);
+        onChange(number, toothState);
+    }, [toothState, onChange, number]);
 
     // Done SubMenu
     const doneSubMenu = (place, value) => {
